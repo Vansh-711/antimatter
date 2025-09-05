@@ -18,6 +18,11 @@ body {
     transform: translate(-50%, -50%);
     text-align: center;
     z-index: 10;
+    transition: opacity 0.5s ease;
+}
+
+.container.hidden {
+    display: none;
 }
 
 .message p {
@@ -44,6 +49,48 @@ body {
     }
 }
 
+/* New rotated prompt styling */
+.rotated-prompt {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff69b4;
+    text-align: center;
+    padding: 30px 50px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff69b4;
+    border-radius: 20px;
+    box-shadow: 
+        0 0 20px rgba(255, 105, 180, 0.6),
+        inset 0 0 20px rgba(255, 105, 180, 0.1);
+    letter-spacing: 2px;
+    z-index: 20;
+    animation: glow-pulse 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+}
+
+.rotated-prompt.visible {
+    display: block;
+}
+
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 
+            0 0 20px rgba(255, 105, 180, 0.6),
+            inset 0 0 20px rgba(255, 105, 180, 0.1);
+    }
+    100% {
+        box-shadow: 
+            0 0 30px rgba(255, 105, 180, 0.9),
+            inset 0 0 30px rgba(255, 105, 180, 0.2);
+    }
+}
+
 #particleCanvas {
     position: absolute;
     top: 0;
@@ -63,6 +110,12 @@ body {
     .phone-emoji {
         font-size: 56px;
     }
+    
+    .rotated-prompt {
+        font-size: 28px;
+        padding: 25px 40px;
+        letter-spacing: 1.5px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -73,5 +126,20 @@ body {
     
     .phone-emoji {
         font-size: 48px;
+    }
+    
+    .rotated-prompt {
+        font-size: 24px;
+        padding: 20px 30px;
+        letter-spacing: 1px;
+    }
+}
+
+/* Landscape specific styles */
+@media (orientation: landscape) {
+    .rotated-prompt {
+        font-size: 28px;
+        max-width: 90vw;
+        line-height: 1.2;
     }
 }

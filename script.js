@@ -70,12 +70,39 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Handle window resize
+// Orientation detection function
+function checkOrientation() {
+    const rotatedPrompt = document.querySelector('.rotated-prompt');
+    const container = document.querySelector('.container');
+    
+    // Check if device is in landscape mode
+    if (window.matchMedia('(orientation: landscape)').matches) {
+        // Show new prompt and hide original message
+        rotatedPrompt.classList.add('visible');
+        container.classList.add('hidden');
+    } else {
+        // Show original message and hide prompt
+        rotatedPrompt.classList.remove('visible');
+        container.classList.remove('hidden');
+    }
+}
+
+// Handle window resize and orientation change
 window.addEventListener('resize', () => {
     resizeCanvas();
     createParticles();
+    checkOrientation();
+});
+
+// Check orientation when page loads
+window.addEventListener('load', checkOrientation);
+
+// Also listen for orientation change event (for better mobile support)
+window.addEventListener('orientationchange', () => {
+    setTimeout(checkOrientation, 100); // Small delay to ensure orientation has changed
 });
 
 // Initialize
 createParticles();
 animate();
+checkOrientation();
