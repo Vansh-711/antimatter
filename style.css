@@ -25,7 +25,6 @@ body {
     display: none;
 }
 
-/* Fade out animation for old text */
 .container.fade-out {
     animation: fadeOutOpacity 1s forwards;
 }
@@ -64,7 +63,7 @@ body {
     }
 }
 
-/* New rotated prompt styling */
+/* Rotated prompt with individual word control */
 .rotated-prompt {
     display: none;
     position: absolute;
@@ -87,10 +86,80 @@ body {
     z-index: 20;
     animation: glow-pulse 2s ease-in-out infinite alternate;
     text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+    line-height: 1.4;
+    transition: all 2s ease-out;
 }
 
 .rotated-prompt.visible {
     display: block;
+}
+
+/* Individual words styling - optimized for smooth animation */
+.rotated-prompt .word {
+    display: inline-block;
+    margin: 0 8px 8px 0;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    will-change: opacity, transform;
+}
+
+.rotated-prompt .cutie-word {
+    cursor: pointer;
+    position: relative;
+    transition: all 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, font-size, letter-spacing;
+}
+
+.rotated-prompt .cutie-word:hover {
+    text-shadow: 
+        0 0 15px #ff69b4,
+        0 0 25px #ff69b4;
+}
+
+.rotated-prompt .emoji {
+    display: inline-block;
+    margin-left: 10px;
+    transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    will-change: opacity, transform;
+}
+
+/* Step 1: Fade out other words and remove background - smoother */
+.rotated-prompt.expanding .word:not(.cutie-word),
+.rotated-prompt.expanding .emoji {
+    opacity: 0;
+    transform: scale(0.2) translateY(-30px);
+}
+
+.rotated-prompt.expanding {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    animation: none;
+    padding: 0;
+}
+
+/* Step 2: Move CUTIE to center - hardware accelerated */
+.rotated-prompt.expanding .cutie-word {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    margin: 0;
+    transition: all 2.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Step 3: Smooth magnification - optimized size and performance */
+.rotated-prompt.expanding.magnified .cutie-word {
+    font-size: 100px;
+    font-weight: 900;
+    letter-spacing: 15px;
+    text-shadow: 
+        0 0 30px #ff69b4,
+        0 0 60px #ff69b4,
+        0 0 90px #ff69b4;
+    transform: translate(-50%, -50%) scale(2.2);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 @keyframes glow-pulse {
@@ -115,7 +184,7 @@ body {
     z-index: 1;
 }
 
-/* Mobile responsiveness */
+/* Mobile responsiveness - optimized sizes */
 @media (max-width: 768px) {
     .message p {
         font-size: 42px;
@@ -130,6 +199,12 @@ body {
         font-size: 28px;
         padding: 25px 40px;
         letter-spacing: 1.5px;
+    }
+    
+    .rotated-prompt.expanding.magnified .cutie-word {
+        font-size: 70px;
+        letter-spacing: 10px;
+        transform: translate(-50%, -50%) scale(1.8);
     }
 }
 
@@ -148,13 +223,33 @@ body {
         padding: 20px 30px;
         letter-spacing: 1px;
     }
+    
+    .rotated-prompt.expanding.magnified .cutie-word {
+        font-size: 50px;
+        letter-spacing: 8px;
+        transform: translate(-50%, -50%) scale(1.5);
+    }
 }
 
-/* Landscape specific styles */
 @media (orientation: landscape) {
     .rotated-prompt {
         font-size: 28px;
         max-width: 90vw;
         line-height: 1.2;
+    }
+    
+    .rotated-prompt.expanding.magnified .cutie-word {
+        font-size: 85px;
+        letter-spacing: 12px;
+        transform: translate(-50%, -50%) scale(2);
+    }
+}
+
+/* High DPI displays optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .rotated-prompt.expanding.magnified .cutie-word {
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }

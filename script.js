@@ -17,7 +17,7 @@ const particles = [];
 class Dot {
     constructor() {
         this.reset();
-        this.y = Math.random() * canvas.height; // Initial spread
+        this.y = Math.random() * canvas.height;
     }
 
     reset() {
@@ -31,7 +31,6 @@ class Dot {
     update() {
         this.y += this.speed;
         
-        // Reset when off screen
         if (this.y > canvas.height + 10) {
             this.reset();
         }
@@ -46,22 +45,16 @@ class Dot {
     }
 }
 
-// Create particles
 function createParticles() {
     particles.length = 0;
-    
-    // Simple dots falling down
     for (let i = 0; i < 50; i++) {
         particles.push(new Dot());
     }
 }
 
-// Animation loop
 function animate() {
-    // Clear canvas completely
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw all particles
     particles.forEach(particle => {
         particle.update();
         particle.draw();
@@ -70,41 +63,104 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Orientation detection function with fade effect
+// Orientation detection with fade effect
 function checkOrientation() {
     const rotatedPrompt = document.querySelector('.rotated-prompt');
     const container = document.querySelector('.container');
     
     if (window.matchMedia('(orientation: landscape)').matches) {
-        // Fade out old container, then hide and show prompt
         if (!container.classList.contains('fade-out')) {
             container.classList.add('fade-out');
             setTimeout(() => {
                 container.classList.add('hidden');
                 rotatedPrompt.classList.add('visible');
-            }, 1000); // match 1s fade duration
+                
+                // Add click event only to CUTIE word
+                setupCutieClick();
+            }, 1000);
         }
     } else {
-        // Show container and remove fade-out for portrait
         rotatedPrompt.classList.remove('visible');
         container.classList.remove('hidden');
         container.classList.remove('fade-out');
+        
+        // Reset any expanded state
+        resetCutieState();
     }
 }
 
-// Handle window resize and orientation change
+// Setup click event for CUTIE word only
+function setupCutieClick() {
+    const cutieWord = document.getElementById('cutieWord');
+    
+    // Remove any existing listeners
+    cutieWord.removeEventListener('click', handleCutieClick);
+    
+    // Add click event to CUTIE word
+    cutieWord.addEventListener('click', handleCutieClick);
+}
+
+// Handle CUTIE word click - optimized smooth animation
+function handleCutieClick() {
+    const rotatedPrompt = document.querySelector('.rotated-prompt');
+    const cutieWord = document.getElementById('cutieWord');
+    
+    // Force hardware acceleration
+    cutieWord.style.willChange = 'transform, font-size, letter-spacing';
+    
+    // Step 1: Start expanding (fade out other words, remove background)
+    rotatedPrompt.classList.add('expanding');
+    
+    // Step 2: After other words fade, trigger magnification with optimized timing
+    setTimeout(() => {
+        rotatedPrompt.classList.add('magnified');
+    }, 1200); // Slightly faster for smoother feel
+    
+    // Add click event to magnified CUTIE to reset - with delay for smooth completion
+    setTimeout(() => {
+        cutieWord.addEventListener('click', handleCutieClickBack);
+        // Clean up will-change after animation completes
+        cutieWord.style.willChange = 'auto';
+    }, 3700);
+}
+
+// Handle click on magnified CUTIE to zoom back out
+function handleCutieClickBack() {
+    resetCutieState();
+}
+
+// Reset CUTIE to normal state - optimized
+function resetCutieState() {
+    const rotatedPrompt = document.querySelector('.rotated-prompt');
+    const cutieWord = document.getElementById('cutieWord');
+    
+    // Force hardware acceleration during reset
+    cutieWord.style.willChange = 'transform, font-size, letter-spacing';
+    
+    rotatedPrompt.classList.remove('expanding');
+    rotatedPrompt.classList.remove('magnified');
+    
+    // Remove click event from magnified state
+    cutieWord.removeEventListener('click', handleCutieClickBack);
+    
+    // Re-setup original click event after animation with optimized timing
+    setTimeout(() => {
+        setupCutieClick();
+        cutieWord.style.willChange = 'auto';
+    }, 2500);
+}
+
+// Optimized event listeners
 window.addEventListener('resize', () => {
     resizeCanvas();
     createParticles();
     checkOrientation();
 });
 
-// Check orientation when page loads
 window.addEventListener('load', checkOrientation);
 
-// Also listen for orientation change event (for better mobile support)
 window.addEventListener('orientationchange', () => {
-    setTimeout(checkOrientation, 100); // Small delay to ensure orientation has changed
+    setTimeout(checkOrientation, 100);
 });
 
 // Initialize
