@@ -25,6 +25,21 @@ body {
     display: none;
 }
 
+/* Fade out animation for old text */
+.container.fade-out {
+    animation: fadeOutOpacity 1s forwards;
+}
+
+@keyframes fadeOutOpacity {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
 .message p {
     color: #ffffff;
     font-size: 48px;

@@ -70,20 +70,25 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-// Orientation detection function
+// Orientation detection function with fade effect
 function checkOrientation() {
     const rotatedPrompt = document.querySelector('.rotated-prompt');
     const container = document.querySelector('.container');
     
-    // Check if device is in landscape mode
     if (window.matchMedia('(orientation: landscape)').matches) {
-        // Show new prompt and hide original message
-        rotatedPrompt.classList.add('visible');
-        container.classList.add('hidden');
+        // Fade out old container, then hide and show prompt
+        if (!container.classList.contains('fade-out')) {
+            container.classList.add('fade-out');
+            setTimeout(() => {
+                container.classList.add('hidden');
+                rotatedPrompt.classList.add('visible');
+            }, 1000); // match 1s fade duration
+        }
     } else {
-        // Show original message and hide prompt
+        // Show container and remove fade-out for portrait
         rotatedPrompt.classList.remove('visible');
         container.classList.remove('hidden');
+        container.classList.remove('fade-out');
     }
 }
 
