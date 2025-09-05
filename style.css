@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000000;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Orbitron', monospace;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.message p {
+    color: #ffffff;
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    text-transform: lowercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.phone-emoji {
+    font-size: 64px;
+    animation: rotate 3s ease-in-out infinite alternate;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(90deg);
+    }
+}
+
+#particleCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .message p {
+        font-size: 42px;
+        letter-spacing: 3px;
+    }
+    
+    .phone-emoji {
+        font-size: 56px;
+    }
+}
+
+@media (max-width: 480px) {
+    .message p {
+        font-size: 36px;
+        letter-spacing: 2px;
+    }
+    
+    .phone-emoji {
+        font-size: 48px;
+    }
+}
